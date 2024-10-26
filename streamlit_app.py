@@ -10,7 +10,7 @@ def start_flask_app():
     logging.info("Flask app started.")
     return process
 
-FLASK_API_URL = 'https://data-gb-processing-dfbj772djxhxjzv5knkrft.streamlit.app'
+FLASK_API_URL = 'https://data-gb-processing-dfbj772djxhxjzv5knkrft.streamlit.app:5000'
 
 def main():
     logging.basicConfig(level=logging.INFO)
@@ -25,14 +25,17 @@ def main():
             logging.info("Submitting persona data and query.")
             persona_response = requests.post(f'{FLASK_API_URL}/persona', json={'persona_data': persona_data}, timeout=10)
             persona_response.raise_for_status()
+            logging.info(f"Raw response from /persona: {persona_response.text}")
             persona = persona_response.json().get('persona')
 
             query_response = requests.post(f'{FLASK_API_URL}/query', json={'query': query}, timeout=10)
             query_response.raise_for_status()
+            logging.info(f"Raw response from /query: {query_response.text}")
             context = query_response.json().get('context')
 
             recommendation_response = requests.post(f'{FLASK_API_URL}/recommendation', json={'context': context}, timeout=10)
             recommendation_response.raise_for_status()
+            logging.info(f"Raw response from /recommendation: {recommendation_response.text}")
             recommended_category = recommendation_response.json().get('recommended_category')
             product_recommendation = recommendation_response.json().get('product_recommendation')
 

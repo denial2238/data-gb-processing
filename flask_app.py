@@ -159,4 +159,4 @@ def get_product_from_eshop(recommended_product_data, context, model):
     return response.text
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
