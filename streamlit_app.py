@@ -10,7 +10,7 @@ def start_flask_app():
     return process
 
 # Update this URL to match your deployed Flask API
-FLASK_API_URL = 'https://data-gb-processing-dfbj772djxhxjzv5knkrft.streamlit.app:5000/api'
+FLASK_API_URL = 'https://data-gb-processing-dfbj772djxhxjzv5knkrft.streamlit.app'
 
 def main():
     st.title("Healthcare Assistant")
