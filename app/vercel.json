@@ -8,8 +8,9 @@
     ],
     "routes": [
       {
-        "src": "/(.*)",
-        "dest": "wsgi.py"
+        "src": "/recommend",
+        "methods": ["POST"],
+        "dest": "/api/recommend.py"
       }
     ]
   }
