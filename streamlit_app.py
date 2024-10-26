@@ -1,11 +1,29 @@
 import requests
 import streamlit as st
 import logging
+import subprocess
+import os
+import time
 
 FLASK_API_URL = 'http://127.0.0.1:5000'
 
+def start_flask_app():
+    # Set the environment variable to specify the path to the Flask app
+    os.environ["FLASK_APP"] = "flask_app.py"
+    
+    # Start the Flask app in a separate process
+    flask_process = subprocess.Popen(['flask', 'run', '--host=127.0.0.1', '--port=5000'])
+    time.sleep(2)  # Wait for a moment to ensure Flask starts up
+
+    return flask_process
+
 def main():
     logging.basicConfig(level=logging.INFO)
+    
+    # Start Flask app
+    flask_process = start_flask_app()
+    logging.info("Flask app started.")
+
     st.title("Healthcare Assistant")
 
     persona_data = st.text_area("Enter Persona Data:")
