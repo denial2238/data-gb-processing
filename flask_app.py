@@ -77,7 +77,12 @@ def handle_recommendation():
     categories = get_categories()
     recommended_category = get_category_recommendation(context, categories, model)
     recommended_product_data = fetch_recommended_product(xata, recommended_category)
-    product_recommendation = get_product_from_eshop(recommended_product_data, context, model)
+    
+    if recommended_product_data:
+        product_recommendation = get_product_from_eshop(recommended_product_data, context, model)
+    else:
+        product_recommendation = "No products found for the recommended category."
+    
     return jsonify({
         'recommended_category': recommended_category,
         'product_recommendation': product_recommendation
@@ -144,7 +149,8 @@ def fetch_recommended_product(xata, recommended_category):
         for record in resp["records"]:
             product_data += f"{record['product_name']}\n{record['product_url']}\n{record['desc_text']}\n-------------\n"
     else:
-        return f"No products found in the '{recommended_category}' category. Please check other categories or add more products."
+        logging.warning(f"No products found in category: {recommended_category}")
+        return None  # No products found for the category
     return product_data
 
 def get_product_from_eshop(recommended_product_data, context, model):
@@ -159,4 +165,4 @@ def get_product_from_eshop(recommended_product_data, context, model):
     return response.text
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True)
