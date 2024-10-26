@@ -1,0 +1,5 @@
+streamlit
+pinecone-client
+xata
+python-dotenv
+google-generativeai
