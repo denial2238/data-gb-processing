@@ -2,15 +2,18 @@ import requests
 import streamlit as st
 import subprocess
 import time
+import logging
 
 def start_flask_app():
     process = subprocess.Popen(['python', 'flask_app.py'])
     time.sleep(2)
+    logging.info("Flask app started.")
     return process
 
 FLASK_API_URL = 'https://data-gb-processing-dfbj772djxhxjzv5knkrft.streamlit.app'
 
 def main():
+    logging.basicConfig(level=logging.INFO)
     st.title("Healthcare Assistant")
     flask_process = start_flask_app()
 
@@ -19,6 +22,7 @@ def main():
 
     if st.button("Submit"):
         try:
+            logging.info("Submitting persona data and query.")
             persona_response = requests.post(f'{FLASK_API_URL}/persona', json={'persona_data': persona_data}, timeout=10)
             persona_response.raise_for_status()
             persona = persona_response.json().get('persona')
@@ -41,11 +45,15 @@ def main():
             st.subheader("Recommended Product:")
             st.write(product_recommendation)
 
+            logging.info("Successfully retrieved persona, category, and product recommendation.")
+
         except requests.exceptions.RequestException as e:
             st.error(f"Error communicating with Flask app: {e}")
+            logging.error(f"RequestException: {e}")
 
     if st.button("Stop Flask App"):
         flask_process.terminate()
+        logging.info("Flask app terminated.")
 
 if __name__ == "__main__":
     main()
