@@ -5,27 +5,23 @@ import subprocess
 import os
 import time
 
+FLASK_APP_PATH = os.path.join(os.getcwd(), 'flask_app.py')  # Adjust the path as needed
 FLASK_API_URL = 'http://127.0.0.1:5000'
 
 def start_flask_app():
-    # Set the environment variable to specify the path to the Flask app
-    os.environ["FLASK_APP"] = "flask_app.py"
-    
-    # Start the Flask app in a separate process
-    flask_process = subprocess.Popen(['flask', 'run', '--host=127.0.0.1', '--port=5000'])
-    time.sleep(2)  # Wait for a moment to ensure Flask starts up
-
+    # Start the Flask app using the absolute path
+    flask_process = subprocess.Popen(['python3', FLASK_APP_PATH], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # Give Flask some time to start
+    time.sleep(5)  # Adjust if necessary for the Flask app to fully initialize
     return flask_process
 
 def main():
     logging.basicConfig(level=logging.INFO)
-    
-    # Start Flask app
-    flask_process = start_flask_app()
-    logging.info("Flask app started.")
-
     st.title("Healthcare Assistant")
 
+    # Start Flask app
+    flask_process = start_flask_app()
+    
     persona_data = st.text_area("Enter Persona Data:")
     query = st.text_input("Enter your query:")
 
