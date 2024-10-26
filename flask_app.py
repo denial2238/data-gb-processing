@@ -15,8 +15,6 @@ API_KEY = os.getenv('API_KEY')
 genai.configure(api_key=API_KEY)
 
 app = Flask(__name__)
-
-# Set up logging
 logging.basicConfig(level=logging.INFO)
 
 class RetrieAPI:
@@ -80,7 +78,6 @@ def handle_recommendation():
     recommended_category = get_category_recommendation(context, categories, model)
     recommended_product_data = fetch_recommended_product(xata, recommended_category)
     product_recommendation = get_product_from_eshop(recommended_product_data, context, model)
-    
     return jsonify({
         'recommended_category': recommended_category,
         'product_recommendation': product_recommendation
@@ -107,7 +104,6 @@ def get_chunks(file_path, chunk_size=2000):
             text = file.read()
     except FileNotFoundError:
         return []
-
     chunks = [(f"{file_path}-{eid}", text[i:i+chunk_size]) for eid, i in enumerate(range(0, len(text), chunk_size))]
     return chunks
 
@@ -142,16 +138,13 @@ def fetch_recommended_product(xata, recommended_category):
         "filter": {"category": recommended_category},
         "page": {"size": 5}
     })
-    
-    logging.info("Xata Response: %s", resp)  # Debugging line
+    logging.info("Xata Response: %s", resp)
     product_data = ""
-    
     if "records" in resp and resp["records"]:
         for record in resp["records"]:
             product_data += f"{record['product_name']}\n{record['product_url']}\n{record['desc_text']}\n-------------\n"
     else:
         return f"No products found in the '{recommended_category}' category. Please check other categories or add more products."
-    
     return product_data
 
 def get_product_from_eshop(recommended_product_data, context, model):
@@ -162,7 +155,6 @@ def get_product_from_eshop(recommended_product_data, context, model):
               PRODUCT DATA: \n
               {recommended_product_data} \n
               Please provide the product title and product URL."""
-    
     response = model.generate_content(prompt)
     return response.text
 
