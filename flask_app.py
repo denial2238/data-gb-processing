@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 from xata.client import XataClient
 import google.generativeai as genai
+import logging
 
 load_dotenv()
 PINECONE_API = os.getenv("PINECONE_API")
@@ -14,6 +15,9 @@ API_KEY = os.getenv('API_KEY')
 genai.configure(api_key=API_KEY)
 
 app = Flask(__name__)
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
 
 class RetrieAPI:
     def __init__(self):
@@ -33,7 +37,7 @@ class RetrieAPI:
                 )
             except PineconeException as e:
                 if "already exists" in str(e):
-                    print(f"Index '{index_name}' already exists.")
+                    logging.info(f"Index '{index_name}' already exists.")
                 else:
                     raise
         self.index = self.pc.Index(index_name)
@@ -139,7 +143,7 @@ def fetch_recommended_product(xata, recommended_category):
         "page": {"size": 5}
     })
     
-    print("Xata Response:", resp)  # Debugging line
+    logging.info("Xata Response: %s", resp)  # Debugging line
     product_data = ""
     
     if "records" in resp and resp["records"]:

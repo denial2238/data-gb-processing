@@ -9,9 +9,12 @@ def start_flask_app():
     time.sleep(2)  # Wait for a moment to ensure Flask has started
     return process
 
+# Update this URL to match your deployed Flask API
+FLASK_API_URL = 'https://data-gb-processing-dfbj772djxhxjzv5knkrft.streamlit.app:5000/api'
+
 def main():
     st.title("Healthcare Assistant")
-    
+
     # Start the Flask app when Streamlit app starts
     flask_process = start_flask_app()
 
@@ -21,15 +24,15 @@ def main():
     if st.button("Submit"):
         try:
             # Interact with the Flask API
-            persona_response = requests.post('http://127.0.0.1:5000/api/persona', json={'persona_data': persona_data})
+            persona_response = requests.post(f'{FLASK_API_URL}/persona', json={'persona_data': persona_data})
             persona_response.raise_for_status()  # Check for request errors
             persona = persona_response.json().get('persona')
 
-            query_response = requests.post('http://127.0.0.1:5000/api/query', json={'query': query})
+            query_response = requests.post(f'{FLASK_API_URL}/query', json={'query': query})
             query_response.raise_for_status()
             context = query_response.json().get('context')
 
-            recommendation_response = requests.post('http://127.0.0.1:5000/api/recommendation', json={'context': context})
+            recommendation_response = requests.post(f'{FLASK_API_URL}/recommendation', json={'context': context})
             recommendation_response.raise_for_status()
             recommended_category = recommendation_response.json().get('recommended_category')
             product_recommendation = recommendation_response.json().get('product_recommendation')
