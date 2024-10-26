@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from xata.client import XataClient
 import google.generativeai as genai
 import logging
+import threading
 
 load_dotenv()
 PINECONE_API = os.getenv("PINECONE_API")
@@ -164,5 +165,14 @@ def get_product_from_eshop(recommended_product_data, context, model):
     response = model.generate_content(prompt)
     return response.text
 
+def run_flask_app():
+    app.run(debug=True, host='0.0.0.0', port=5000)
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # Run the Flask app in a separate thread
+    flask_thread = threading.Thread(target=run_flask_app, daemon=True)
+    flask_thread.start()
+
+    # Keep the main thread alive to prevent the program from exiting
+    while True:
+        pass
