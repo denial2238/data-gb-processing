@@ -1,11 +1,19 @@
+from flask import Flask, Blueprint
 
-from flask import Blueprint, jsonify
-
+# Create a blueprint
 main = Blueprint('main', __name__)
 
-@main.route('/recommend', methods=['POST'])
-def recommend():
-    data = request.json
-    query = data.get('query')
-    # Add your recommendation logic here
-    return jsonify({"recommendation": f"Processed query: {query}"})
+@main.route('/')
+def index():
+    return "Hello, Flask!"
+
+def create_app():
+    app = Flask(__name__)
+
+    # Configuration
+    app.config['SECRET_KEY'] = '12345678'  # Replace with a secure secret key
+
+    # Register blueprints or routes here
+    app.register_blueprint(main)
+
+    return app
