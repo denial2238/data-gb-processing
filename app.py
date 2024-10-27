@@ -179,14 +179,16 @@ def get_product_from_eshop(recommended_product_data, context, model):
     response = model.generate_content(prompt)
     return response.text
 
-def create_prompt(context, query, persona):
-    prompt = f"""You are a healthcare assistant aiming to inform clients with relevant, scientific information. 
-              Based on the CONTEXT, QUERY, and PERSONA, advise accordingly. \n
+def create_prompt(query, persona):
+    prompt = f"""You are a healthcare assistant aiming to inform clients with relevant a product recommendation assistant. 
+              Based on the QUERY, PERSONA and PRODUCT DATA, recommend a suitable product. \n
               QUERY: \n
               {query} \n
               PERSONA: \n
-              {persona}"""
+              {persona} \n
+              """
     return prompt
+
 
 if __name__ == '__main__':
     app.run(debug=True)
