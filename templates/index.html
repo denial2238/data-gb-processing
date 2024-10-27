@@ -92,13 +92,13 @@
 
     // Generate Response from Prompt
     document.getElementById('generatePromptBtn').onclick = async function () {
-      const combinedContext = document.getElementById('combinedContext').value;
+      const combinedQuery = document.getElementById('combinedQuery').value;
       const combinedPersona = document.getElementById('combinedPersona').value;
       
       const response = await fetch('/api/prompt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ context: combinedContext, persona: combinedPersona })
+        body: JSON.stringify({ query: combinedQuery, persona: combinedPersona })
       });
       
       const data = await response.json();
