@@ -88,6 +88,18 @@ def handle_recommendation():
         'product_recommendation': product_recommendation
     })
 
+@app.route('/api/prompt', methods=['POST'])
+def handle_prompt():
+    data = request.json
+    query = data.get('query')
+    persona = data.get('persona')
+    
+    prompt = create_prompt( query, persona)
+    response = model.generate_content(prompt)
+    
+    return jsonify({'response': response.text})
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -147,14 +159,12 @@ def fetch_recommended_product(xata, recommended_category):
         "filter": {"category": recommended_category},
         "page": {"size": 5}
     })
-    logging.info("Xata Response: %s", resp)
     product_data = ""
-    if "records" in resp and resp["records"]:
+    if "records" in resp:  # Check if 'records' exist in response
         for record in resp["records"]:
             product_data += f"{record['product_name']}\n{record['product_url']}\n{record['desc_text']}\n-------------\n"
     else:
-        logging.warning(f"No products found in category: {recommended_category}")
-        return None
+        print("No records found in response.")
     return product_data
 
 def get_product_from_eshop(recommended_product_data, context, model):
@@ -165,8 +175,18 @@ def get_product_from_eshop(recommended_product_data, context, model):
               PRODUCT DATA: \n
               {recommended_product_data} \n
               Please provide the product title and product URL."""
+    
     response = model.generate_content(prompt)
     return response.text
+
+def create_prompt(context, query, persona):
+    prompt = f"""You are a healthcare assistant aiming to inform clients with relevant, scientific information. 
+              Based on the CONTEXT, QUERY, and PERSONA, advise accordingly. \n
+              QUERY: \n
+              {query} \n
+              PERSONA: \n
+              {persona}"""
+    return prompt
 
 if __name__ == '__main__':
     app.run(debug=True)
