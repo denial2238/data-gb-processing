@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Persona and Recommendation App</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="text-center">AI Persona and Product Recommendation</h1>
+    
+    <!-- Persona Creation Form -->
+    <div class="card mt-4">
+      <div class="card-body">
+        <h5 class="card-title">Generate Persona</h5>
+        <textarea id="personaData" class="form-control" rows="4" placeholder="Enter persona data..."></textarea>
+        <button id="generatePersonaBtn" class="btn btn-primary mt-3">Generate Persona</button>
+        <p id="personaResult" class="mt-3"></p>
+      </div>
+    </div>
+
+    <!-- Query Form -->
+    <div class="card mt-4">
+      <div class="card-body">
+        <h5 class="card-title">Query Similar Context</h5>
+        <textarea id="queryText" class="form-control" rows="4" placeholder="Enter query text..."></textarea>
+        <button id="queryBtn" class="btn btn-primary mt-3">Get Context</button>
+        <pre id="queryResult" class="mt-3"></pre>
+      </div>
+    </div>
+
+    <!-- Recommendation Form -->
+    <div class="card mt-4">
+      <div class="card-body">
+        <h5 class="card-title">Product Recommendation</h5>
+        <textarea id="recommendationContext" class="form-control" rows="4" placeholder="Enter context for recommendation..."></textarea>
+        <button id="recommendationBtn" class="btn btn-primary mt-3">Get Recommendation</button>
+        <pre id="recommendationResult" class="mt-3"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Generate Persona
+    document.getElementById('generatePersonaBtn').onclick = async function () {
+      const personaData = document.getElementById('personaData').value;
+      const response = await fetch('/api/persona', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ persona_data: personaData })
+      });
+      const data = await response.json();
+      document.getElementById('personaResult').innerText = data.persona;
+    };
+
+    // Query Similar Context
+    document.getElementById('queryBtn').onclick = async function () {
+      const queryText = document.getElementById('queryText').value;
+      const response = await fetch('/api/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: queryText })
+      });
+      const data = await response.json();
+      document.getElementById('queryResult').innerText = data.context;
+    };
+
+    // Get Product Recommendation
+    document.getElementById('recommendationBtn').onclick = async function () {
+      const recommendationContext = document.getElementById('recommendationContext').value;
+      const response = await fetch('/api/recommendation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ context: recommendationContext })
+      });
+      const data = await response.json();
+      document.getElementById('recommendationResult').innerText = 
+        `Category: ${data.recommended_category}\n\nProduct Recommendation:\n${data.product_recommendation}`;
+    };
+  </script>
+</body>
+</html>

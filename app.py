@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from pinecone import Pinecone, ServerlessSpec
 from pinecone.exceptions import PineconeException
 import os
@@ -87,6 +87,10 @@ def handle_recommendation():
         'recommended_category': recommended_category,
         'product_recommendation': product_recommendation
     })
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 def embed_text(text: str) -> list[float]:
     result = genai.embed_content(
