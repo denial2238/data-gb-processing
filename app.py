@@ -94,11 +94,32 @@ def handle_prompt():
     query = data.get('query')
     persona = data.get('persona')
     
-    prompt = create_prompt( query, persona)
+    prompt = create_prompt(query, persona)
     response = model.generate_content(prompt)
     
     return jsonify({'response': response.text})
 
+@app.route('/api/fitness_training', methods=['POST'])
+def handle_fitness_training():
+    data = request.json
+    fitness_goals = data.get('fitness_goals', '')
+    experience_level = data.get('experience_level', '')
+    available_equipment = data.get('available_equipment', '')
+    
+    # Create a prompt for generating fitness advice
+    prompt = f"""
+    Based on the following user information, provide personalized fitness training advice.
+    
+    Fitness Goals: {fitness_goals}
+    Experience Level: {experience_level}
+    Available Equipment: {available_equipment}
+    
+    Please suggest a training plan that includes exercises, duration, and frequency.
+    """
+    
+    response = model.generate_content(prompt)
+    
+    return jsonify({'fitness_advice': response.text})
 
 @app.route('/')
 def index():
