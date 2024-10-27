@@ -150,7 +150,7 @@ def fetch_recommended_product(xata, recommended_category):
             product_data += f"{record['product_name']}\n{record['product_url']}\n{record['desc_text']}\n-------------\n"
     else:
         logging.warning(f"No products found in category: {recommended_category}")
-        return None  # No products found for the category
+        return None
     return product_data
 
 def get_product_from_eshop(recommended_product_data, context, model):
